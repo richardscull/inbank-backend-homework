@@ -36,10 +36,12 @@ public class DecisionEngine {
      * @throws NoValidLoanException         If there is no valid loan found for the
      *                                      given ID code, loan amount and loan
      *                                      period
+     * @throws InvalidPersonalAgeException  If the customer is too young or too old
+     *                                      or too risky to apply for a loan
      */
     public Decision calculateApprovedLoan(String personalCode, Long loanAmount, int loanPeriod)
             throws InvalidPersonalCodeException, InvalidLoanAmountException, InvalidLoanPeriodException,
-            NoValidLoanException {
+            NoValidLoanException, InvalidPersonalAgeException {
         Validator.validatePersonalCode(personalCode);
         Validator.validateLoanAmount(loanAmount);
         Validator.validateLoanPeriod(loanPeriod);
@@ -62,6 +64,8 @@ public class DecisionEngine {
         } else {
             throw new NoValidLoanException("You are not eligible for a loan!");
         }
+
+        Validator.validateAgeForLoanPeriod(personalCode, loanPeriod);
 
         return new Decision(outputLoanAmount, loanPeriod, null);
     }

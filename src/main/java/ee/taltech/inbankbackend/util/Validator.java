@@ -1,12 +1,19 @@
 package ee.taltech.inbankbackend.util;
 
 import com.github.vladislavgoltjajev.personalcode.locale.estonia.EstonianPersonalCodeValidator;
+
+import java.time.Period;
+
+import com.github.vladislavgoltjajev.personalcode.common.Gender;
+import com.github.vladislavgoltjajev.personalcode.exception.PersonalCodeException;
+import com.github.vladislavgoltjajev.personalcode.locale.estonia.EstonianPersonalCodeParser;
 import ee.taltech.inbankbackend.exceptions.*;
 
 import ee.taltech.inbankbackend.config.DecisionEngineConstants;
 
 public class Validator {
     private static final EstonianPersonalCodeValidator validator = new EstonianPersonalCodeValidator();
+    private static final EstonianPersonalCodeParser parser = new EstonianPersonalCodeParser();
 
     public Validator() {
         throw new IllegalStateException("Utility class");
@@ -50,5 +57,42 @@ public class Validator {
         }
     }
 
-    // TODO: Add age validation;
+    /**
+     * Validates the age of the customer based on their personal code.
+     *
+     * @param personalCode The personal code to validate.
+     * @throws InvalidPersonalAgeException If the age is invalid.
+     */
+    public static void validateAgeForLoanPeriod(String personalCode, int loanPeriod)
+            throws InvalidPersonalAgeException {
+        try {
+            Period age = parser.getAge(personalCode);
+            Gender gender = parser.getGender(personalCode);
+
+            Period ageWithPeriod = age.plusMonths(loanPeriod);
+            double ageDouble = ageWithPeriod.getYears()
+                    + ageWithPeriod.getMonths() / 12.0;
+
+            if (age.getYears() < DecisionEngineConstants.MINIMUM_LOAN_AGE) {
+                throw new InvalidPersonalAgeException("Customer is too young!");
+            }
+
+            switch (gender) {
+                case MALE:
+                    if (ageDouble > DecisionEngineConstants.MAXIMUM_LIFETIME_MALE) {
+                        throw new InvalidPersonalAgeException("Customer is too old!");
+                    }
+                    break;
+                case FEMALE:
+                    if (ageDouble > DecisionEngineConstants.MAXIMUM_LIFETIME_FEMALE) {
+                        throw new InvalidPersonalAgeException("Customer is too old!");
+                    }
+                    break;
+                default:
+                    throw new InvalidPersonalAgeException("Invalid gender!");
+            }
+        } catch (PersonalCodeException e) {
+            throw new InvalidPersonalAgeException("Invalid personal code!");
+        }
+    }
 }

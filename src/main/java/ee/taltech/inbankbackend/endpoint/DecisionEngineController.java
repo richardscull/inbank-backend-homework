@@ -58,7 +58,8 @@ public class DecisionEngineController {
             response.setErrorMessage(decision.getErrorMessage());
 
             return ResponseEntity.ok(response);
-        } catch (InvalidPersonalCodeException | InvalidLoanAmountException | InvalidLoanPeriodException e) {
+        } catch (InvalidPersonalCodeException | InvalidLoanAmountException | InvalidLoanPeriodException
+                | InvalidPersonalAgeException e) {
             return handleException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (NoValidLoanException e) {
             return handleException(HttpStatus.NOT_FOUND, e.getMessage());
