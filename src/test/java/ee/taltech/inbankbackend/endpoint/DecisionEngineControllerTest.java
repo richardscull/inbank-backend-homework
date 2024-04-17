@@ -1,10 +1,7 @@
 package ee.taltech.inbankbackend.endpoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ee.taltech.inbankbackend.exceptions.InvalidLoanAmountException;
-import ee.taltech.inbankbackend.exceptions.InvalidLoanPeriodException;
-import ee.taltech.inbankbackend.exceptions.InvalidPersonalCodeException;
-import ee.taltech.inbankbackend.exceptions.NoValidLoanException;
+import ee.taltech.inbankbackend.exceptions.*;
 import ee.taltech.inbankbackend.service.Decision;
 import ee.taltech.inbankbackend.service.DecisionEngine;
 import org.junit.jupiter.api.BeforeEach;
