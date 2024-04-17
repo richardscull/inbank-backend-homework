@@ -36,6 +36,8 @@ public class DecisionEngineController {
      * response with an error message.<br>
      * - If the personal ID code is invalid, the endpoint returns a bad request
      * response with an error message.<br>
+     * - If the customer is too young or too old or too risky to apply for a loan,
+     * returns a bad request response with an error message.<br>
      * - If an unexpected error occurs, the endpoint returns an internal server
      * error response with an error message.<br>
      * - If no valid loans can be found, the endpoint returns a not found response
